@@ -5,9 +5,6 @@ function App() {
   const [inputSentence, setinputSentence] = useState(
     "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
   );
-  // const [modifiedSentence, setModifiedSentence] = useState(
-  //   inputSentence.toUpperCase()
-  // );
   const [modifications, setModifications] = useState([
     { originalChar: "", replacementChar: "" },
   ]);
@@ -21,69 +18,34 @@ function App() {
     newValue = newValue.toUpperCase();
     setinputSentence(newValue);
 
-    // Maintain the cursor position even when the input
-    // is lowercase.
+    // Maintain the cursor position even when the input is lowercase.
     setTimeout(() => {
       inputElement.setSelectionRange(start, end);
     }, 0);
   };
 
-  // const createModificationsMap = (newModifications) => {
-  //   const modificationsMap = new Map();
-  //   newModifications.forEach((modification) => {
-  //     modificationsMap.set(
-  //       modification.originalChar,
-  //       modification.replacementChar
-  //     );
-  //   });
-  //   return modificationsMap;
-  // };
-
-  // const modifySentence = (modificationsMap) => {
-  //   let newSentenceCharArray = inputSentence.split("");
-  //   for (let i = 0; i < newSentenceCharArray.length; i++) {
-  //     if (modificationsMap.has(newSentenceCharArray[i])) {
-  //       newSentenceCharArray[i] = modificationsMap.get(newSentenceCharArray[i]);
-  //     }
-  //   }
-  //   // setModifiedSentence(newSentenceCharArray.join(""));
-  // };
-
-  const getStyledOriginalSentence = (sentence, modifications) => {
-    const modificationSet = modifications.reduce((set, mod) => {
-      set.add(mod.originalChar);
-      return set;
-    }, new Set());
-
-    return sentence.split("").map((char, index) => {
-      if (modificationSet.has(char)) {
-        return (
-          <span key={index} style={{ color: "orange" }}>
-            {char}
-          </span>
-        );
-      }
-      return char;
-    });
-  };
-
-  const getStyledModifiedSentence = (sentence, modifications) => {
-    const modificationMap = modifications.reduce((map, mod) => {
-      map[mod.originalChar] = mod.replacementChar;
+  const getStyledSentence = (color, getChar) => {
+    const charMap = modifications.reduce((map, mod) => {
+      map[mod.originalChar] = getChar(mod);
       return map;
     }, {});
 
-    return sentence.split("").map((char, index) => {
-      if (modificationMap[char]) {
-        return (
-          <span key={index} style={{ color: "green" }}>
-            {modificationMap[char]}
-          </span>
-        );
-      }
-      return char;
-    });
+    return inputSentence.split("").map((char, index) =>
+      charMap[char] ? (
+        <span key={index} style={{ color }}>
+          {charMap[char]}
+        </span>
+      ) : (
+        char
+      )
+    );
   };
+
+  const getStyledOriginalSentence = () =>
+    getStyledSentence("orange", (mod) => mod.originalChar);
+
+  const getStyledModifiedSentence = () =>
+    getStyledSentence("green", (mod) => mod.replacementChar);
 
   const handleDeleteModification = (index) => {
     const newModifications = modifications.filter((_, i) => i !== index);
@@ -91,8 +53,6 @@ function App() {
       newModifications.push({ originalChar: "", replacementChar: "" });
     }
     setModifications(newModifications);
-    // const modificationsMap = createModificationsMap(newModifications);
-    // modifySentence(modificationsMap);
   };
 
   const handleModificationChange = (index, event) => {
@@ -100,23 +60,6 @@ function App() {
     const newModifications = [...modifications];
     newModifications[index][name] = value.toUpperCase();
     setModifications(newModifications);
-
-    // Only update if originalChar and replacementChar are not empty
-    // if (
-    //   newModifications[index].originalChar === "" ||
-    //   newModifications[index].replacementChar === ""
-    // ) {
-    //   if (newModifications[index].replacementChar === "") {
-    //     // Remove the modification from the sentence if the replacementChar is empty
-    //     const modificationsMap = createModificationsMap(newModifications);
-    //     modificationsMap.delete(newModifications[index].originalChar);
-    //     // modifySentence(modificationsMap);
-    //   }
-    //   return;
-    // }
-    // const modificationsMap = createModificationsMap(newModifications);
-    // modifySentence(modificationsMap);
-    // console.log(getStyledModifiedSentence(inputSentence, newModifications));
   };
 
   const addModification = () => {
@@ -143,18 +86,19 @@ function App() {
       />
       <br />
       <br />
+
       <table className="phraseTable">
         <tbody>
           <tr>
-            <td>Styled Original phrase</td>
+            <td>Original phrase</td>
             <td className="phrase">
-              <tt>{getStyledOriginalSentence(inputSentence, modifications)}</tt>
+              <tt>{getStyledOriginalSentence()}</tt>
             </td>
           </tr>
           <tr>
-            <td>Styled Decrypted phrase</td>
+            <td>Decrypted phrase</td>
             <td className="phrase">
-              <tt>{getStyledModifiedSentence(inputSentence, modifications)}</tt>
+              <tt>{getStyledModifiedSentence()}</tt>
             </td>
           </tr>
         </tbody>
@@ -162,9 +106,9 @@ function App() {
 
       <h4>Character substitutions:</h4>
       <p>
-        If you enter a duplicate, the last one will be used (e.g. A-{">"}B, A-
-        {">"}C will translate to A-{">"}C and H-{">"}S, H-{">"}
-        <tt>blank</tt> will translate to H-{">"}
+        If you enter a duplicate, the last one will be used (e.g. A→B, A-
+        {">"}C will translate to A→C and H→S, H→
+        <tt>blank</tt> will translate to H→
         <tt>blank</tt>).
       </p>
       {modifications.map((modification, index) => (
@@ -173,15 +117,17 @@ function App() {
             type="text"
             name="originalChar"
             size={5}
+            maxLength={1}
             placeholder="Old"
             value={modification.originalChar}
             onChange={(event) => handleModificationChange(index, event)}
           />
-          {" -> "}
+          → 
           <input
             type="text"
             name="replacementChar"
             size={5}
+            maxLength={1}
             placeholder="New"
             value={modification.replacementChar}
             onChange={(event) => handleModificationChange(index, event)}
