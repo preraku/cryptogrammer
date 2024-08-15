@@ -1,8 +1,11 @@
-# React + Vite
+# Simple substitution cipher solving helper
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+https://preraku.github.io/cryptogrammer/
 
-Currently, two official plugins are available:
+Useful for cryptograms
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Need help with:
+- Make it look better
+- Let two or more people solve the same puzzle together
+- Store puzzles and solutions?
+- Timer
