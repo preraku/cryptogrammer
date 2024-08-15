@@ -6,7 +6,7 @@ function App() {
     "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
   );
   const [modifications, setModifications] = useState([
-    { originalChar: "", replacementChar: "" },
+    { originalChar: "", replacementChar: "", locked: false },
   ]);
   const [origColor, setOrigColor] = useState("#FFA500");
   const [modColor, setModColor] = useState("#008000");
@@ -58,10 +58,21 @@ function App() {
     getStyledSentence(modColor, (mod) => mod.replacementChar);
 
   const handleDeleteModification = (index) => {
+    if (modifications[index].locked) return;
     const newModifications = modifications.filter((_, i) => i !== index);
     if (newModifications.length === 0) {
-      newModifications.push({ originalChar: "", replacementChar: "" });
+      newModifications.push({
+        originalChar: "",
+        replacementChar: "",
+        locked: false,
+      });
     }
+    setModifications(newModifications);
+  };
+
+  const handleLockToggle = (index) => {
+    const newModifications = [...modifications];
+    newModifications[index].locked = !newModifications[index].locked;
     setModifications(newModifications);
   };
 
@@ -75,7 +86,7 @@ function App() {
   const addModification = () => {
     setModifications([
       ...modifications,
-      { originalChar: "", replacementChar: "" },
+      { originalChar: "", replacementChar: "", locked: false },
     ]);
   };
 
@@ -142,11 +153,19 @@ function App() {
             value={modification.replacementChar}
             onChange={(event) => handleModificationChange(index, event)}
           />
+          {!modification.locked && (
+            <button
+              className="deleteButton"
+              onClick={() => handleDeleteModification(index)}
+            >
+              Delete
+            </button>
+          )}
           <button
-            id="deleteButton"
-            onClick={() => handleDeleteModification(index)}
+            className="lockButton"
+            onClick={() => handleLockToggle(index)}
           >
-            Delete
+            {modification.locked ? "🔓" : "🔒 in!"}
           </button>
         </div>
       ))}
