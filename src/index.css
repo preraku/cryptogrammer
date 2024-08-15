@@ -1,0 +1,78 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  margin-right: 20%;
+}
+
+body {
+  /* margin: 0; */
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  /* min-height: 100vh; */
+}
+
+h4 {
+  /* font-size: 1.2em; */
+  /* font-weight: 500; */
+  line-height: 0.5;
+}
+
+.phraseTable {
+  border-collapse: collapse;
+  border-spacing: 0;
+  font: 16px "Open Sans", Helvetica, Arial, sans-serif;
+
+  max-width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+  margin-right: 20%;
+}
+
+.phraseTable td,
+.phraseTable th {
+  border: 1px solid rgb(160 160 160);
+  padding: 4px 6px;
+  word-wrap: break-word;
+}
+
+.phraseTable .phrase {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.phrase {
+  font-size: 1.2em;
+}
+
+#deleteButton {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 3px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+#deleteButton:hover {
+  background-color: #d32f2f;
+}
+
+#addButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 3px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+#addButton:hover {
+  background-color: #388e3c;
+}
