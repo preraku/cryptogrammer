@@ -8,6 +8,8 @@ function App() {
   const [modifications, setModifications] = useState([
     { originalChar: "", replacementChar: "" },
   ]);
+  const [origColor, setOrigColor] = useState("#FFA500");
+  const [modColor, setModColor] = useState("#008000");
 
   const handleNewInputSentence = (event) => {
     const inputElement = inputRef.current;
@@ -22,6 +24,14 @@ function App() {
     setTimeout(() => {
       inputElement.setSelectionRange(start, end);
     }, 0);
+  };
+
+  const handleOrigColorChange = (event) => {
+    setOrigColor(event.target.value);
+  };
+
+  const handleModColorChange = (event) => {
+    setModColor(event.target.value);
   };
 
   const getStyledSentence = (color, getChar) => {
@@ -42,10 +52,10 @@ function App() {
   };
 
   const getStyledOriginalSentence = () =>
-    getStyledSentence("orange", (mod) => mod.originalChar);
+    getStyledSentence(origColor, (mod) => mod.originalChar);
 
   const getStyledModifiedSentence = () =>
-    getStyledSentence("green", (mod) => mod.replacementChar);
+    getStyledSentence(modColor, (mod) => mod.replacementChar);
 
   const handleDeleteModification = (index) => {
     const newModifications = modifications.filter((_, i) => i !== index);
@@ -122,7 +132,7 @@ function App() {
             value={modification.originalChar}
             onChange={(event) => handleModificationChange(index, event)}
           />
-          → 
+          →
           <input
             type="text"
             name="replacementChar"
@@ -149,6 +159,25 @@ function App() {
 
       <h3>Notepad</h3>
       <textarea id="notepad" size={1000} name="notepad" rows={4} cols={20} />
+
+      <h4>Color settings:</h4>
+      <label htmlFor="origColor">Old character color:</label>
+      <input
+        type="color"
+        id="origColor"
+        name="origColor"
+        value={origColor}
+        onChange={handleOrigColorChange}
+      />
+
+      <label htmlFor="modColor"> New character color:</label>
+      <input
+        type="color"
+        id="modColor"
+        name="modColor"
+        value={modColor}
+        onChange={handleModColorChange}
+      />
     </>
   );
 }
