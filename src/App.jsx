@@ -2,10 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import io from "socket.io-client";
 import "./App.css";
 
-// Local: const socket = io("http://localhost:8080");
-const socket = io(
-  "https://cryptogrammer-backend.eba-bstibphf.us-west-2.elasticbeanstalk.com/"
-);
+// Local:
+// const socket = io("http://localhost:8080");
+const socket = io("https://app.prerak.net/");
 
 function App() {
   const [inputSentence, setinputSentence] = useState(
