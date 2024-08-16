@@ -5,6 +5,7 @@ https://preraku.github.io/cryptogrammer/
 Useful for cryptograms
 
 Need help with:
+- Make the phrases tables at least as long as the width of the screen
 - Use a priority queue in the backend to sort inactive puzzles (right now it is O(n) every minute).
 - Make it look better
 - Let two or more people solve the same puzzle together

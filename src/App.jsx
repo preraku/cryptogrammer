@@ -4,7 +4,7 @@ import "./App.css";
 
 // Local: const socket = io("http://localhost:8080");
 const socket = io(
-  "http://cryptogrammer-backend.eba-bstibphf.us-west-2.elasticbeanstalk.com/"
+  "https://cryptogrammer-backend.eba-bstibphf.us-west-2.elasticbeanstalk.com/"
 );
 
 function App() {
