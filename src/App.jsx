@@ -1,5 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import io from "socket.io-client";
 import "./App.css";
+
+// Local: const socket = io("http://localhost:8080");
+const socket = io(
+  "http://cryptogrammer-backend.eba-bstibphf.us-west-2.elasticbeanstalk.com/"
+);
 
 function App() {
   const [inputSentence, setinputSentence] = useState(
@@ -10,6 +16,31 @@ function App() {
   ]);
   const [origColor, setOrigColor] = useState("#FFA500");
   const [modColor, setModColor] = useState("#008000");
+  const [gameId, setGameId] = useState(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    socket.on("gameCreated", (gameId) => {
+      setGameId(gameId);
+    });
+
+    socket.on("gameState", (state) => {
+      setinputSentence(state.inputSentence);
+      setModifications(state.modifications);
+      setOrigColor(state.origColor);
+      setModColor(state.modColor);
+    });
+
+    socket.on("gameJoined", (gameId) => {
+      setGameId(gameId);
+    });
+
+    return () => {
+      socket.off("gameCreated");
+      socket.off("gameState");
+      socket.off("gameJoined");
+    };
+  }, []);
 
   const handleNewInputSentence = (event) => {
     const inputElement = inputRef.current;
@@ -19,6 +50,7 @@ function App() {
     let newValue = event.target.value;
     newValue = newValue.toUpperCase();
     setinputSentence(newValue);
+    socket.emit("updateInputSentence", { gameId, newSentence: newValue });
 
     // Maintain the cursor position even when the input is lowercase.
     setTimeout(() => {
@@ -27,11 +59,21 @@ function App() {
   };
 
   const handleOrigColorChange = (event) => {
-    setOrigColor(event.target.value);
+    const newColor = event.target.value;
+    setOrigColor(newColor);
+    socket.emit("updateColors", {
+      gameId,
+      colors: { origColor: newColor, modColor },
+    });
   };
 
   const handleModColorChange = (event) => {
-    setModColor(event.target.value);
+    const newColor = event.target.value;
+    setModColor(newColor);
+    socket.emit("updateColors", {
+      gameId,
+      colors: { origColor, modColor: newColor },
+    });
   };
 
   const getStyledSentence = (color, getChar) => {
@@ -68,12 +110,14 @@ function App() {
       });
     }
     setModifications(newModifications);
+    socket.emit("updateModifications", { gameId, newModifications });
   };
 
   const handleLockToggle = (index) => {
     const newModifications = [...modifications];
     newModifications[index].locked = !newModifications[index].locked;
     setModifications(newModifications);
+    socket.emit("updateModifications", { gameId, newModifications });
   };
 
   const handleModificationChange = (index, event) => {
@@ -81,20 +125,42 @@ function App() {
     const newModifications = [...modifications];
     newModifications[index][name] = value.toUpperCase();
     setModifications(newModifications);
+    socket.emit("updateModifications", { gameId, newModifications });
   };
 
   const addModification = () => {
-    setModifications([
+    const newModifications = [
       ...modifications,
       { originalChar: "", replacementChar: "", locked: false },
-    ]);
+    ];
+    setModifications(newModifications);
+    socket.emit("updateModifications", { gameId, newModifications });
   };
 
-  const inputRef = useRef(null);
+  const createGame = () => {
+    socket.emit("createGame");
+  };
+
+  const joinGame = (gameId) => {
+    // setGameId(gameId);
+    socket.emit("joinGame", gameId);
+  };
 
   return (
     <>
       <h1>Simple Substitution Cipher Helper</h1>
+      <button onClick={createGame}>Create Game</button>
+      <input
+        type="text"
+        id="gameId"
+        placeholder="Enter Game ID to Join"
+        onBlur={(e) => joinGame(e.target.value)}
+      />
+      {gameId && (
+        <p>
+          🟢 You are connected! Your Game ID: <tt>{gameId}</tt>
+        </p>
+      )}
       <h4>Type in your encrypted phrase:</h4>
       <input
         type="text"
