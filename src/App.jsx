@@ -14,8 +14,12 @@ function App() {
   const [modifications, setModifications] = useState([
     { originalChar: "", replacementChar: "", locked: false },
   ]);
-  const [origColor, setOrigColor] = useState("#FFA500");
-  const [modColor, setModColor] = useState("#008000");
+  const [origColor, setOrigColor] = useState(
+    localStorage.getItem("origColor") || "#FFA500"
+  );
+  const [modColor, setModColor] = useState(
+    localStorage.getItem("modColor") || "#008000"
+  );
   const [gameIdInput, setGameIdInput] = useState("");
   const [gameId, setGameId] = useState(null);
   const inputRef = useRef(null);
@@ -34,8 +38,6 @@ function App() {
       console.log("gameState", state);
       setinputSentence(state.inputSentence);
       setModifications(state.modifications);
-      setOrigColor(state.origColor);
-      setModColor(state.modColor);
     });
 
     socket.on("gameJoined", ({ gameId, gameState }) => {
@@ -43,8 +45,6 @@ function App() {
       setGameId(gameId);
       setinputSentence(gameState.inputSentence);
       setModifications(gameState.modifications);
-      setOrigColor(gameState.origColor);
-      setModColor(gameState.modColor);
     });
 
     return () => {
@@ -76,22 +76,14 @@ function App() {
 
   const handleOrigColorChange = (event) => {
     const newColor = event.target.value;
+    localStorage.setItem("origColor", newColor);
     setOrigColor(newColor);
-    if (gameId === null) return;
-    socket.emit("updateColors", {
-      gameId,
-      colors: { origColor: newColor, modColor },
-    });
   };
 
   const handleModColorChange = (event) => {
     const newColor = event.target.value;
+    localStorage.setItem("modColor", newColor);
     setModColor(newColor);
-    if (gameId === null) return;
-    socket.emit("updateColors", {
-      gameId,
-      colors: { origColor, modColor: newColor },
-    });
   };
 
   const getStyledSentence = (color, getChar) => {
@@ -264,26 +256,36 @@ function App() {
       <br />
 
       <h3>Notepad</h3>
-      <textarea id="notepad" size={1000} name="notepad" rows={4} cols={50} />
-
-      <h4>Color settings:</h4>
-      <label htmlFor="origColor">Old character color:</label>
-      <input
-        type="color"
-        id="origColor"
-        name="origColor"
-        value={origColor}
-        onChange={handleOrigColorChange}
+      <textarea
+        className="notepadText"
+        id="notepad"
+        size={1000}
+        name="notepad"
+        rows={4}
+        cols={50}
       />
 
-      <label htmlFor="modColor"> New character color:</label>
-      <input
-        type="color"
-        id="modColor"
-        name="modColor"
-        value={modColor}
-        onChange={handleModColorChange}
-      />
+      <h4 className="colorSettingsHeader">Color settings:</h4>
+      <div className="colorSetting">
+        <label htmlFor="origColor">Old character color: </label>
+        <input
+          type="color"
+          id="origColor"
+          name="origColor"
+          value={origColor}
+          onChange={handleOrigColorChange}
+        />
+      </div>
+      <div className="colorSetting">
+        <label htmlFor="modColor">New character color: </label>
+        <input
+          type="color"
+          id="modColor"
+          name="modColor"
+          value={modColor}
+          onChange={handleModColorChange}
+        />
+      </div>
     </>
   );
 }

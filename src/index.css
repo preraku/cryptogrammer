@@ -3,7 +3,6 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-  margin-right: 20%;
 }
 
 body {
@@ -20,11 +19,8 @@ h4 {
   border-collapse: collapse;
   border-spacing: 0;
   font: 16px "Open Sans", Helvetica, Arial, sans-serif;
-
-  max-width: 100%;
   table-layout: fixed;
   word-wrap: break-word;
-  margin-right: 20%;
 }
 
 .phraseTable td,
@@ -84,4 +80,16 @@ h4 {
 
 .lockButton:hover {
   background-color: #0e3b5f;
+}
+
+.colorSettingsHeader {
+  margin-bottom: 8px; /* Adjust this value as needed */
+}
+
+.colorSetting {
+  margin-bottom: 4px;
+}
+
+.notepadText {
+  font: monospaced;
 }
