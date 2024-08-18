@@ -5,6 +5,7 @@ https://preraku.github.io/cryptogrammer/
 Useful for cryptograms
 
 Need help with:
+
 - Make the phrases tables at least as long as the width of the screen
 - Use a priority queue in the backend to sort inactive puzzles (right now it is O(n) every minute).
 - Make it look better
@@ -14,3 +15,7 @@ Need help with:
 - Stop sharing colors. Let people use their own colors.
 - Store colors in local storage.
 - Moving the backend host/port to a config file so that local development is easier.
+- Make the text area monospaced
+- Allow deletion of all non-locked in guesses.
+- Allow duplicating the puzzle to try different solutions
+- Handle broken connections
